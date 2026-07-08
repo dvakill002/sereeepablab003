@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SEREEEPAB FILM LAB</title>
+<style>
+  :root{
+    --paper:#F3F0E7;
+    --paper-2:#EAE5D6;
+    --ink:#1B1A17;
+    --ink-soft:#5A564C;
+    --safelight:#C1440E;
+    --safelight-dark:#8E3009;
+    --line:#C9C2AE;
+    --error:#B3261E;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Helvetica Neue',Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .mono{ font-family:'Courier New',Courier,monospace; }
+
+  .sprockets{
+    display:flex;
+    justify-content:space-between;
+    padding:0 14px;
+    background:var(--ink);
+    height:16px;
+    align-items:center;
+  }
+  .sprockets span{
+    width:8px;height:8px;border-radius:2px;background:var(--paper);
+    opacity:.85;
+  }
+
+  .wrap{ max-width:520px; margin:0 auto; padding:0 0 60px; }
+  .wrap.wide{ max-width:640px; }
+
+  header.hero{
+    background:var(--ink);
+    color:var(--paper);
+    padding:28px 22px 22px;
+    position:relative;
+  }
+  .eyebrow{
+    font-family:'Courier New',monospace;
+    font-size:11px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--safelight);
+    margin:0 0 10px;
+  }
+  .brand{
+    font-size:26px;
+    font-weight:700;
+    letter-spacing:.03em;
+    margin:0 0 6px;
+    line-height:1.15;
+  }
+  .brand small{
+    display:block;
+    font-family:'Courier New',monospace;
+    font-size:11px;
+    font-weight:400;
+    letter-spacing:.12em;
+    color:#B8B2A0;
+    margin-top:6px;
+  }
+  .sub{
+    font-size:13px;
+    color:#CFCABB;
+    margin:14px 0 0;
+    line-height:1.6;
+  }
+  .sub .en{ color:#8F8A7A; font-size:12px; }
+
+  .frame-count{
+    position:absolute;
+    top:26px; right:22px;
+    font-family:'Courier New',monospace;
+    font-size:11px;
+    color:var(--safelight);
+    text-align:right;
+    line-height:1.5;
+  }
+
+  main{ padding:22px 18px 0; }
+
+  .section{ margin-bottom:26px; }
+  .section-title{
+    display:flex;
+    align-items:baseline;
+    gap:8px;
+    margin:0 0 4px;
+  }
+  .section-title .num{
+    font-family:'Courier New',monospace;
+    font-size:12px;
+    color:var(--safelight);
+    font-weight:700;
+  }
+  .section-title .th{ font-size:15px; font-weight:700; }
+  .section-title .en{
+    font-family:'Courier New',monospace;
+    font-size:10.5px;
+    color:var(--ink-soft);
+    letter-spacing:.04em;
+  }
+
+  label.field{ display:block; margin-top:14px; }
+  .field .lab{
+    display:block;
+    font-size:12.5px;
+    font-weight:700;
+    margin-bottom:2px;
+  }
+  .field .lab .en{
+    font-family:'Courier New',monospace;
+    font-weight:400;
+    font-size:10.5px;
+    color:var(--ink-soft);
+    margin-left:6px;
+  }
+  input[type=text], input[type=tel], input[type=email], input[type=number],
+  select, textarea{
+    width:100%;
+    margin-top:6px;
+    padding:11px 12px;
+    background:#FFFDF8;
+    border:1px solid var(--line);
+    border-radius:3px;
+    font-size:15px;
+    color:var(--ink);
+    font-family:inherit;
+    appearance:none;
+  }
+  select{
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path d='M0 0L5 6L10 0Z' fill='%231B1A17'/></svg>");
+    background-repeat:no-repeat;
+    background-position:right 12px center;
+    padding-right:30px;
+  }
+  input:focus, select:focus, textarea:focus{
+    outline:none;
+    border-color:var(--safelight);
+    box-shadow:0 0 0 3px rgba(193,68,14,0.14);
+  }
+  textarea{ resize:vertical; min-height:70px; }
+  .err{ display:none; color:var(--error); font-size:11.5px; margin-top:5px; font-family:'Courier New',monospace; }
+  .field.invalid input, .field.invalid select{ border-color:var(--error); }
+  .field.invalid .err{ display:block; }
+
+  .roll{
+    position:relative;
+    margin-top:16px;
+    padding:16px 14px 14px;
+    background:var(--paper-2);
+    border:1px solid var(--line);
+    border-radius:4px;
+  }
+  .roll::before{
+    content:"";
+    position:absolute;
+    left:0; top:8px; bottom:8px;
+    width:3px;
+    background:repeating-linear-gradient(to bottom, var(--safelight) 0 6px, transparent 6px 12px);
+    border-radius:2px;
+  }
+  .roll-head{ display:flex; align-items:center; justify-content:space-between; }
+  .roll-tag{
+    font-family:'Courier New',monospace;
+    font-size:11px;
+    font-weight:700;
+    color:var(--safelight-dark);
+    letter-spacing:.05em;
+  }
+  .roll-remove{
+    background:none; border:none;
+    font-family:'Courier New',monospace;
+    font-size:11px; color:var(--ink-soft);
+    cursor:pointer; text-decoration:underline; padding:2px 4px;
+  }
+  .roll-grid{ display:grid; grid-template-columns:1fr 1fr; gap:0 10px; }
+  .roll-grid .field.full{ grid-column:1 / -1; }
+
+  .add-roll{
+    width:100%; margin-top:14px; padding:12px;
+    background:transparent; border:1.5px dashed var(--safelight);
+    color:var(--safelight-dark); font-weight:700; font-size:13.5px;
+    border-radius:4px; cursor:pointer; font-family:'Courier New',monospace;
+  }
+  .add-roll:active{ transform:scale(0.99); }
+
+  .timestamp-box{
+    margin-top:14px; padding:10px 12px;
+    background:var(--paper-2); border:1px dashed var(--line);
+    border-radius:3px; font-family:'Courier New',monospace;
+    font-size:11.5px; color:var(--ink-soft);
+    display:flex; justify-content:space-between;
+  }
+
+  .submit-btn{
+    width:100%; margin-top:24px; padding:15px;
+    background:var(--safelight); color:#FFF7EE;
+    border:none; border-radius:4px; font-size:15px;
+    font-weight:700; letter-spacing:.03em; cursor:pointer;
+  }
+  .submit-btn:active{ background:var(--safelight-dark); }
+  .submit-btn:disabled{ opacity:.6; }
+
+  .foot-note{
+    margin-top:10px; font-size:11px; color:var(--ink-soft);
+    text-align:center; line-height:1.5;
+  }
+  .staff-link{
+    display:block; text-align:center; margin-top:16px;
+    font-family:'Courier New',monospace; font-size:11px;
+    color:var(--ink-soft); text-decoration:underline;
+    background:none; border:none; cursor:pointer; width:100%; padding:8px;
+  }
+
+  .confirm{ display:none; padding:36px 22px; text-align:center; }
+  .confirm.show{ display:block; }
+  .screen.hide{ display:none; }
+  .confirm .stamp{
+    display:inline-block; border:2px solid var(--safelight);
+    color:var(--safelight-dark); font-family:'Courier New',monospace;
+    font-weight:700; font-size:13px; padding:8px 16px; border-radius:4px;
+    transform:rotate(-2deg); letter-spacing:.08em; margin-bottom:18px;
+  }
+  .confirm h2{ font-size:19px; margin:0 0 6px; }
+  .confirm .en{ font-family:'Courier New',monospace; font-size:11px; color:var(--ink-soft); margin:0 0 20px; }
+  .confirm .ref{
+    background:var(--paper-2); border:1px solid var(--line); border-radius:4px;
+    padding:14px; text-align:left; font-size:13px; line-height:2;
+  }
+  .confirm .ref b{ font-family:'Courier New',monospace; color:var(--safelight-dark); font-size:14px; }
+  .confirm .again{
+    margin-top:22px; background:none; border:1px solid var(--ink);
+    padding:10px 18px; border-radius:4px; font-size:13px; cursor:pointer; color:var(--ink);
+  }
+
+  /* Admin */
+  .admin-topbar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 18px; gap:10px; flex-wrap:wrap;
+  }
+  .admin-title{ font-size:15px; font-weight:700; }
+  .admin-title .en{ display:block; font-family:'Courier New',monospace; font-size:10.5px; color:var(--ink-soft); font-weight:400; }
+  .back-btn{
+    background:none; border:1px solid var(--ink); color:var(--ink);
+    padding:8px 12px; border-radius:4px; font-size:12px; cursor:pointer;
+    font-family:'Courier New',monospace;
+  }
+  .stats-row{
+    display:grid; grid-template-columns:1fr 1fr; gap:10px;
+    padding:0 18px; margin-bottom:16px;
+  }
+  .stat-card{
+    background:var(--paper-2); border:1px solid var(--line); border-radius:4px;
+    padding:12px 14px;
+  }
+  .stat-card .n{ font-size:22px; font-weight:700; font-family:'Courier New',monospace; color:var(--safelight-dark); }
+  .stat-card .l{ font-size:11px; color:var(--ink-soft); margin-top:2px; }
+  .admin-controls{
+    display:flex; gap:8px; padding:0 18px 14px; flex-wrap:wrap;
+  }
+  .admin-controls input{ flex:1; min-width:180px; }
+  .refresh-btn{
+    background:var(--ink); color:var(--paper); border:none;
+    border-radius:4px; padding:0 14px; font-size:12px; cursor:pointer;
+    font-family:'Courier New',monospace; white-space:nowrap;
+  }
+  .order-list{ padding:0 18px; display:flex; flex-direction:column; gap:12px; }
+  .order-card{
+    background:#FFFDF8; border:1px solid var(--line); border-radius:6px;
+    padding:14px 16px; position:relative;
+  }
+  .order-card::before{
+    content:"";
+    position:absolute; left:0; top:10px; bottom:10px; width:3px;
+    background:repeating-linear-gradient(to bottom, var(--safelight) 0 6px, transparent 6px 12px);
+    border-radius:2px;
+  }
+  .order-head{
+    display:flex; justify-content:space-between; align-items:flex-start;
+    margin-bottom:8px; gap:8px;
+  }
+  .order-num{
+    font-family:'Courier New',monospace; font-weight:700; font-size:15px;
+    color:var(--safelight-dark);
+  }
+  .order-time{
+    font-family:'Courier New',monospace; font-size:11px; color:var(--ink-soft);
+    text-align:right;
+  }
+  .order-cust{ font-size:13.5px; margin-bottom:10px; line-height:1.6; }
+  .order-cust .k{ color:var(--ink-soft); }
+  .roll-row{
+    display:flex; justify-content:space-between; gap:8px;
+    font-size:12.5px; padding:6px 0; border-top:1px dashed var(--line);
+  }
+  .roll-row:first-of-type{ border-top:1px solid var(--line); margin-top:2px; }
+  .roll-row .rb{ font-weight:700; }
+  .roll-row .rt{ color:var(--ink-soft); text-align:right; }
+  .order-notes{
+    margin-top:10px; padding:8px 10px; background:var(--paper-2);
+    border-radius:3px; font-size:12px; color:var(--ink-soft); line-height:1.5;
+  }
+  .empty-state{
+    text-align:center; padding:40px 20px; color:var(--ink-soft); font-size:13px;
+  }
+
+  /* Shop info */
+  .shop-info{
+    margin:18px 18px 0;
+    background:var(--paper-2);
+    border:1px solid var(--line);
+    border-radius:6px;
+  }
+  .shop-info summary{
+    padding:13px 14px;
+    font-size:13.5px;
+    font-weight:700;
+    cursor:pointer;
+    list-style:none;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+  }
+  .shop-info summary::-webkit-details-marker{ display:none; }
+  .shop-info summary .en{
+    font-family:'Courier New',monospace; font-weight:400;
+    font-size:10.5px; color:var(--ink-soft); display:block; margin-top:2px;
+  }
+  .shop-info summary .chev{ font-family:'Courier New',monospace; color:var(--safelight-dark); }
+  .shop-info[open] summary .chev{ transform:rotate(90deg); display:inline-block; }
+  .shop-info-body{ padding:0 14px 16px; font-size:12.5px; line-height:1.7; }
+  .shop-info-body h4{
+    font-size:11px; text-transform:uppercase; letter-spacing:.06em;
+    color:var(--safelight-dark); margin:14px 0 6px; font-family:'Courier New',monospace;
+  }
+  .shop-info-body h4:first-child{ margin-top:0; }
+  .shop-info-body .addr{ color:var(--ink-soft); }
+  .price-table{ width:100%; border-collapse:collapse; font-size:12px; margin-top:4px; }
+  .price-table th, .price-table td{
+    border:1px solid var(--line); padding:5px 6px; text-align:center;
+  }
+  .price-table th{ background:var(--ink); color:var(--paper); font-weight:400; font-family:'Courier New',monospace; font-size:10.5px; }
+  .price-table td:first-child, .price-table th:first-child{ text-align:left; }
+  .price-table .dash{ color:var(--ink-soft); }
+  .addon-list{ margin:4px 0 0; padding-left:16px; }
+  .addon-list li{ margin-bottom:3px; }
+  .contact-list{ list-style:none; padding:0; margin:0; }
+  .contact-list li{ display:flex; justify-content:space-between; padding:3px 0; }
+  .contact-list .k{ color:var(--ink-soft); }
+
+  /* Admin tabs */
+  .admin-tabs{ display:flex; gap:8px; padding:0 18px 14px; }
+  .admin-tab{
+    flex:1; background:none; border:1px solid var(--line); color:var(--ink-soft);
+    padding:9px; border-radius:4px; font-size:12.5px; cursor:pointer;
+    font-family:'Courier New',monospace;
+  }
+  .admin-tab.active{ background:var(--ink); color:var(--paper); border-color:var(--ink); }
+  .loyalty-card{
+    background:#FFFDF8; border:1px solid var(--line); border-radius:6px;
+    padding:12px 16px; display:flex; justify-content:space-between; align-items:center; gap:10px;
+  }
+  .loyalty-name{ font-size:13.5px; font-weight:700; }
+  .loyalty-phone{ font-size:11.5px; color:var(--ink-soft); font-family:'Courier New',monospace; }
+  .loyalty-stats{ text-align:right; }
+  .loyalty-stats .rolls{ font-family:'Courier New',monospace; font-size:13px; }
+  .loyalty-stats .free{ font-size:11px; color:var(--safelight-dark); font-weight:700; margin-top:2px; }
+</style>
+</head>
+<body>
+
+<div class="sprockets">
+  <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+  <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+</div>
+
+<!-- ============ CUSTOMER FORM ============ -->
+<div class="wrap screen" id="customerScreen">
+  <header class="hero">
+    <p class="eyebrow">Film drop-off · ใบส่งฟิล์มล้าง</p>
+    <h1 class="brand">SEREEEPAB FILM LAB
+      <small>DEVELOPING &amp; SCANNING · ล้าง สแกน</small>
+    </h1>
+    <p class="sub">กรอกข้อมูลก่อนส่งฟิล์มให้ทางร้าน เพื่อความถูกต้องในการล้างและติดต่อกลับ<br>
+      <span class="en">Fill in your details before dropping off your film rolls.</span></p>
+    <div class="frame-count" id="frameCount">FRAME<br>01A</div>
+  </header>
+
+  <details class="shop-info">
+    <summary>ข้อมูลร้าน &amp; ราคา <span class="chev">▸</span><span class="en">Shop info &amp; pricing — tap to expand</span></summary>
+    <div class="shop-info-body">
+      <h4>ที่อยู่ · Location</h4>
+      <p class="addr">ร้านล้างฟิล์มย่านรังสิต ซอยรังสิตภิรมย์ ข้าง ม.กรุงเทพ<br>
+      <span class="en">Film lab in Rangsit, Soi Rangsit Phirom, next to Bangkok University</span></p>
+
+      <h4>บริการ · Services</h4>
+      <p>ล้าง - สแกนฟิล์ม · จำหน่ายฟิล์ม · เช่ากล้องฟิล์ม<br>
+      <span class="en">Film developing &amp; scanning, film sales, film camera rental</span></p>
+
+      <h4>ราคาล้าง - สแกน (บาท) · Develop &amp; scan prices (THB)</h4>
+      <table class="price-table">
+        <tr><th>ประเภท</th><th>135</th><th>120</th><th>110</th></tr>
+        <tr><td>ฟิล์มสี · Color</td><td>150</td><td>160</td><td>160</td></tr>
+        <tr><td>ขาวดำ · B&amp;W</td><td>200</td><td>240</td><td>200</td></tr>
+        <tr><td>ฟิล์มหนัง (ไม่มีคาร์บอน) · Motion (no remjet)</td><td>180</td><td class="dash">—</td><td class="dash">—</td></tr>
+        <tr><td>สแกนอย่างเดียว · Scan only</td><td>80</td><td>80</td><td>80</td></tr>
+      </table>
+
+      <h4>บริการเสริม (+50 บาท) · Special requests (+50 THB)</h4>
+      <ul class="addon-list">
+        <li>สแกนเห็นหนามเตย · Sprocket scanning</li>
+        <li>สแกนเฟรมเดี่ยว · Half frame</li>
+        <li>ฟิล์มทดลอง · Film manipulation</li>
+        <li>ฟิล์มหมดอายุ / มูด · Expired film</li>
+        <li>ฟิล์มหนัง มีคาร์บอน · Motion film with remjet</li>
+      </ul>
+
+      <h4>ช่องทางติดต่อ · Contact</h4>
+      <ul class="contact-list">
+        <li><span class="k">Facebook / IG / TikTok</span><span>SEREEEPAB</span></li>
+        <li><span class="k">WhatsApp / โทร</span><span>095-473-3658</span></li>
+      </ul>
+    </div>
+  </details>
+
+  <main id="formMain">
+    <form id="dropForm" novalidate>
+
+      <div class="section">
+        <div class="section-title"><span class="num">01</span><span class="th">ข้อมูลผู้ส่ง</span><span class="en">Customer info</span></div>
+
+        <label class="field" id="f-nickname">
+          <span class="lab">ชื่อเล่น <span class="en">Nickname</span></span>
+          <input type="text" name="nickname" placeholder="เช่น มิ้นท์ / e.g. Mint" required>
+          <span class="err">กรุณากรอกชื่อเล่น · Please enter a nickname</span>
+        </label>
+
+        <label class="field" id="f-phone">
+          <span class="lab">เบอร์โทร <span class="en">Phone number</span></span>
+          <input type="tel" name="phone" placeholder="08X-XXX-XXXX" required>
+          <span class="err">กรุณากรอกเบอร์โทรให้ถูกต้อง · Please enter a valid phone number</span>
+        </label>
+
+        <label class="field" id="f-email">
+          <span class="lab">Gmail</span>
+          <input type="email" name="email" placeholder="yourname@gmail.com" required>
+          <span class="err">กรุณากรอก Gmail ให้ถูกต้อง · Please enter a valid Gmail address</span>
+        </label>
+      </div>
+
+      <div class="section">
+        <div class="section-title"><span class="num">02</span><span class="th">รายการฟิล์ม</span><span class="en">Film rolls</span></div>
+        <div id="rollsContainer"></div>
+        <button type="button" class="add-roll" id="addRollBtn">+ เพิ่มม้วนถัดไป · Add another roll</button>
+      </div>
+
+      <div class="section">
+        <div class="section-title"><span class="num">03</span><span class="th">เพิ่มเติม</span><span class="en">Additional notes</span></div>
+        <label class="field">
+          <span class="lab">หมายเหตุ <span class="en">Notes (optional)</span></span>
+          <textarea name="notes" placeholder="เช่น ฟิล์มหมดอายุ, ฟิล์มติดขัด ฯลฯ / e.g. expired film, jammed roll, etc."></textarea>
+        </label>
+      </div>
+
+      <div class="timestamp-box">
+        <span>วันที่ส่ง · Date: <b id="dateOut">—</b></span>
+        <span>เวลา · Time: <b id="timeOut">—</b></span>
+      </div>
+
+      <button type="submit" class="submit-btn" id="submitBtn">ส่งฟอร์ม · Submit form</button>
+      <p class="foot-note">ข้อมูลนี้จะถูกส่งให้ทางร้าน SEREEEPAB FILM LAB เท่านั้น<br>This information is shared only with SEREEEPAB FILM LAB staff.</p>
+      <button type="button" class="staff-link" id="toAdminBtn">สำหรับพนักงาน · เปิด Google Sheet</button>
+    </form>
+  </main>
+
+  <div class="confirm" id="confirmScreen">
+    <div class="stamp">RECEIVED · รับแล้ว</div>
+    <h2>ส่งข้อมูลเรียบร้อย</h2>
+    <p class="en">Your form has been submitted</p>
+    <div class="ref" id="refBox"></div>
+    <button class="again" id="againBtn">ส่งฟอร์มใหม่ · Submit another</button>
+  </div>
+</div>
+<div class="sprockets">
+  <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+  <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+</div>
+
+<script>
+/* ============================================================
+   ตั้งค่า 2 บรรทัดนี้ก่อนใช้งานจริง · CONFIGURE THESE 2 LINES
+   1) SCRIPT_URL = ลิงก์ Web app ที่ได้จากการ Deploy Google Apps Script
+   2) SHEET_URL  = ลิงก์ Google Sheet ของร้าน (สำหรับปุ่ม "สำหรับพนักงาน")
+   ============================================================ */
+const CONFIG = {
+  SCRIPT_URL: "https://script.google.com/macros/s/PASTE_YOUR_DEPLOYMENT_ID_HERE/exec",
+  SHEET_URL: "https://docs.google.com/spreadsheets/d/PASTE_YOUR_SHEET_ID_HERE/edit"
+};
+
+const FILM_SIZES = ["135","120","110"];
+const FILM_TYPES = [
+  {v:"color", th:"ฟิล์มสี", en:"Color negative"},
+  {v:"bw", th:"ฟิล์มขาวดำ", en:"Black & white"},
+  {v:"motion", th:"ฟิล์มหนัง", en:"Motion film"}
+];
+
+/* ---------- Customer form logic ---------- */
+let rollCount = 0;
+const rollsContainer = document.getElementById('rollsContainer');
+
+function frameLabel(n){
+  const letters = ["A","B","C","D","E","F","G","H"];
+  const idx = (n-1) % letters.length;
+  const set = Math.floor((n-1)/letters.length)+1;
+  return String(set).padStart(2,"0") + letters[idx];
+}
+
+function addRoll(){
+  rollCount++;
+  const id = rollCount;
+  const div = document.createElement('div');
+  div.className = 'roll';
+  div.dataset.rollId = id;
+  div.innerHTML = `
+    <div class="roll-head">
+      <span class="roll-tag mono">ROLL ${String(id).padStart(2,'0')} · ม้วนที่ ${id}</span>
+      <button type="button" class="roll-remove" data-remove="${id}">ลบ · remove</button>
+    </div>
+    <div class="roll-grid">
+      <label class="field full" id="f-brand-${id}">
+        <span class="lab">ยี่ห้อฟิล์ม <span class="en">Film brand</span></span>
+        <input type="text" name="brand-${id}" placeholder="เช่น Kodak / Fuji / e.g. Kodak, Fuji" required>
+        <span class="err">กรุณากรอกยี่ห้อฟิล์ม · Please enter the film brand</span>
+      </label>
+      <label class="field" id="f-type-${id}">
+        <span class="lab">ประเภทฟิล์ม <span class="en">Film type</span></span>
+        <select name="type-${id}" required>
+          <option value="">เลือก · Select</option>
+          ${FILM_TYPES.map(t=>`<option value="${t.v}">${t.th} · ${t.en}</option>`).join('')}
+        </select>
+        <span class="err">กรุณาเลือกประเภทฟิล์ม · Please select a film type</span>
+      </label>
+      <label class="field" id="f-size-${id}">
+        <span class="lab">ขนาด <span class="en">Size</span></span>
+        <select name="size-${id}" required>
+          <option value="">เลือก · Select</option>
+          ${FILM_SIZES.map(s=>`<option value="${s}">${s} mm</option>`).join('')}
+        </select>
+        <span class="err">กรุณาเลือกขนาดฟิล์ม · Please select a film size</span>
+      </label>
+      <label class="field full" id="f-qty-${id}">
+        <span class="lab">จำนวนม้วน <span class="en">Quantity (rolls)</span></span>
+        <input type="number" name="qty-${id}" min="1" value="1" required>
+        <span class="err">กรุณากรอกจำนวนม้วน · Please enter a quantity</span>
+      </label>
+    </div>
+  `;
+  rollsContainer.appendChild(div);
+  updateFrameCounter();
+  updateRemoveButtons();
+}
+
+function updateRemoveButtons(){
+  const rolls = rollsContainer.querySelectorAll('.roll');
+  rolls.forEach(r=>{
+    const btn = r.querySelector('.roll-remove');
+    btn.style.visibility = rolls.length > 1 ? 'visible' : 'hidden';
+  });
+}
+
+rollsContainer.addEventListener('click', (e)=>{
+  const id = e.target.getAttribute('data-remove');
+  if(id){
+    const rolls = rollsContainer.querySelectorAll('.roll');
+    if(rolls.length > 1){
+      rollsContainer.querySelector(`.roll[data-roll-id="${id}"]`).remove();
+      updateFrameCounter();
+      updateRemoveButtons();
+    }
+  }
+});
+
+document.getElementById('addRollBtn').addEventListener('click', addRoll);
+
+function updateFrameCounter(){
+  const n = rollsContainer.querySelectorAll('.roll').length;
+  document.getElementById('frameCount').innerHTML = `FRAME<br>${frameLabel(n)}`;
+}
+
+function updateTimestamp(){
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('th-TH', {year:'numeric', month:'2-digit', day:'2-digit'});
+  const timeStr = now.toLocaleTimeString('th-TH', {hour:'2-digit', minute:'2-digit'});
+  document.getElementById('dateOut').textContent = dateStr;
+  document.getElementById('timeOut').textContent = timeStr;
+  return { dateStr, timeStr, iso: now.toISOString() };
+}
+updateTimestamp();
+setInterval(updateTimestamp, 30000);
+
+addRoll();
+
+function clearErrors(form){
+  form.querySelectorAll('.field.invalid').forEach(f=>f.classList.remove('invalid'));
+}
+
+function validate(form){
+  let ok = true;
+  clearErrors(form);
+
+  const nickname = form.nickname.value.trim();
+  if(!nickname){ document.getElementById('f-nickname').classList.add('invalid'); ok=false; }
+
+  const phone = form.phone.value.trim();
+  if(!/^[0-9+\-\s]{9,}$/.test(phone)){ document.getElementById('f-phone').classList.add('invalid'); ok=false; }
+
+  const email = form.email.value.trim();
+  if(!/^[^\s@]+@gmail\.com$/i.test(email)){ document.getElementById('f-email').classList.add('invalid'); ok=false; }
+
+  const rolls = rollsContainer.querySelectorAll('.roll');
+  rolls.forEach(r=>{
+    const id = r.dataset.rollId;
+    const brand = form[`brand-${id}`].value.trim();
+    const type = form[`type-${id}`].value;
+    const size = form[`size-${id}`].value;
+    const qty = form[`qty-${id}`].value;
+    if(!brand){ document.getElementById(`f-brand-${id}`).classList.add('invalid'); ok=false; }
+    if(!type){ document.getElementById(`f-type-${id}`).classList.add('invalid'); ok=false; }
+    if(!size){ document.getElementById(`f-size-${id}`).classList.add('invalid'); ok=false; }
+    if(!qty || Number(qty) < 1){ document.getElementById(`f-qty-${id}`).classList.add('invalid'); ok=false; }
+  });
+
+  return ok;
+}
+
+document.getElementById('dropForm').addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const form = e.target;
+  if(!validate(form)) return;
+
+  if(CONFIG.SCRIPT_URL.includes('PASTE_YOUR_DEPLOYMENT_ID_HERE')){
+    alert('ยังไม่ได้ตั้งค่า SCRIPT_URL ในไฟล์ index.html · SCRIPT_URL is not configured yet');
+    return;
+  }
+
+  const submitBtn = document.getElementById('submitBtn');
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'กำลังส่ง... · Submitting...';
+
+  const rolls = [];
+  rollsContainer.querySelectorAll('.roll').forEach((r,i)=>{
+    const id = r.dataset.rollId;
+    const typeVal = form[`type-${id}`].value;
+    const typeObj = FILM_TYPES.find(t=>t.v===typeVal);
+    rolls.push({
+      rollNumber: i+1,
+      brand: form[`brand-${id}`].value.trim(),
+      type: typeObj ? (typeObj.th + ' / ' + typeObj.en) : typeVal,
+      size: form[`size-${id}`].value + ' mm',
+      quantity: Number(form[`qty-${id}`].value)
+    });
+  });
+
+  const payload = {
+    nickname: form.nickname.value.trim(),
+    phone: form.phone.value.trim(),
+    email: form.email.value.trim(),
+    rolls,
+    notes: form.notes.value.trim()
+  };
+
+  try{
+    const res = await fetch(CONFIG.SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
+    const result = await res.json();
+
+    if(!result.success){
+      throw new Error(result.error || 'Unknown error');
+    }
+
+    document.getElementById('formMain').classList.add('hide');
+    document.getElementById('confirmScreen').classList.add('show');
+
+    const totalRolls = rolls.reduce((s,r)=>s+r.quantity,0);
+    const loyaltyLine = result.freeRollsEarned > 0
+      ? `สิทธิ์ล้างฟรีสะสม · Free rolls earned: <b>${result.freeRollsEarned}</b> (แจ้งพนักงานเพื่อใช้สิทธิ์ · tell staff to redeem)`
+      : `อีก ${result.rollsToNextFree} ม้วน รับสิทธิ์ล้างฟรี 1 ม้วน · ${result.rollsToNextFree} more roll(s) to your next free wash`;
+
+    document.getElementById('refBox').innerHTML = `
+      หมายเลขออเดอร์ · Order number: <b>${result.orderNumber}</b><br>
+      ชื่อเล่น · Nickname: <b>${payload.nickname}</b><br>
+      จำนวนม้วนทั้งหมด · Total rolls: <b>${totalRolls}</b><br>
+      วันที่/เวลา · Date/Time: <b>${result.date} ${result.time}</b><br>
+      สะสมฟิล์มทั้งหมด · Lifetime rolls: <b>${result.customerTotalRolls}</b><br>
+      ${loyaltyLine}
+    `;
+  }catch(err){
+    console.error('Submit error', err);
+    alert('ส่งข้อมูลไม่สำเร็จ กรุณาลองใหม่ · Failed to submit, please try again.\n\n' + err.message);
+  }
+
+  submitBtn.disabled = false;
+  submitBtn.textContent = 'ส่งฟอร์ม · Submit form';
+});
+
+document.getElementById('againBtn').addEventListener('click', ()=>{
+  document.getElementById('dropForm').reset();
+  rollsContainer.innerHTML = '';
+  rollCount = 0;
+  addRoll();
+  updateTimestamp();
+  document.getElementById('confirmScreen').classList.remove('show');
+  document.getElementById('formMain').classList.remove('hide');
+});
+
+document.getElementById('toAdminBtn').addEventListener('click', ()=>{
+  if(CONFIG.SHEET_URL.includes('PASTE_YOUR_SHEET_ID_HERE')){
+    alert('ยังไม่ได้ตั้งค่า SHEET_URL ในไฟล์ index.html · SHEET_URL is not configured yet');
+    return;
+  }
+  window.open(CONFIG.SHEET_URL, '_blank');
+});
+</script>
+-e 
+</body>
+</html>
